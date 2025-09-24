@@ -11,6 +11,8 @@ import Main from '@/components/layout/Main/Main';
 import type { Metadata } from 'next';
 
 import '@/styles/globals.scss';
+import { getStudentsApi } from '@/api/studentsApi';
+import StudentInterface from '@/types/StudentInterface';
 
 export const metadata: Metadata = {
   title: 'Вэб разработка ВКИ - Next.js шаблон',
@@ -19,8 +21,8 @@ export const metadata: Metadata = {
 
 const RootLayout = async ({ children }: Readonly<{ children: React.ReactNode }>): Promise<React.ReactElement> => {
   let groups: GroupInterface[];
+  let students: StudentInterface[];
 
-  // выполняется на сервере - загрузка групп
   await queryClient.prefetchQuery({
     queryKey: ['groups'],
     queryFn: async () => {
