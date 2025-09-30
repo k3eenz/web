@@ -21,7 +21,7 @@
     "@stylistic/eslint-plugin": "^5.3.1",
     "@tanstack/react-query-devtools": "^5.87.1",
     "@types/node": "^20",
-    "@types/react": "^19",
+    "@types/react": "19.1.16",
     "@types/react-dom": "^19",
     "@typescript-eslint/eslint-plugin": "^8.43.0",
     "@typescript-eslint/parser": "^8.43.0",

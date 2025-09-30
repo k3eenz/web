@@ -6,26 +6,49 @@ import useStudents from '@/hooks/useStudents';
 
 
 const Students = (): React.ReactElement => {
-  const { data: students = [], isLoading, error } = useStudents();
+  const { students = [], isLoading, error, deleteStudentMutate  } = useStudents();
   
   if (isLoading) return <div>Загрузка</div>;
 
   if (error) return <div>Ошибка</div>;
-  
-  return (
+
+  const handleDelete = (id: number) => {
+    deleteStudentMutate(id);
+  };
+
+   return (
     <div className={styles.Students}>
-      {students.map((student: StudentInterface) => (
-        <div key={student.id} className={styles.student}>
-          <h2>
-            {student.first_name} {student.middle_name} {student.last_name} - ({student.group_id})
-          </h2>
-        </div>
+      {students.map(student => (
+        <Student key={student.id} student={student} onDelete={handleDelete} />
       ))}
     </div>
   );
 };
 
+interface Props {
+  student: StudentInterface;
+  onDelete: (id: number) => void;
+}
 
+const Student = ({ student, onDelete }: Props): React.ReactElement => {
+  const onDeleteHandler = (): void => {
+    onDelete(student.id);
+  };
+
+  return (
+    <div className={`${styles.Student} ${student.isDeleted ? styles['--isDeleted'] : '' }`}>
+      {student.id}
+      {' - '}
+      {student.last_name}
+      {' '}
+      {student.first_name}
+      {' '}
+      {student.middle_name}
+      {' '}
+      <button onClick={onDeleteHandler}>Удалить</button>
+    </div>
+  );
+};
 
 export default Students;
 
