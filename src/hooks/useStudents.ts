@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import StudentInterface from '@/types/StudentInterface';
+import { deleteStudentApi, fetchStudents } from '@/api/studentsApi';
 
 interface StudentsHookInterface {
   students: StudentInterface[];
@@ -9,22 +10,6 @@ interface StudentsHookInterface {
   error: Error | null;
   deleteStudentMutate: (studentId: number) => void;
 }
-
-// Получение студентов
-const fetchStudents = async (): Promise<StudentInterface[]> => {
-  const res = await fetch('http://localhost:3000/api/students');
-  if (!res.ok) throw new Error('Ошибка загрузки');
-  return res.json();
-};
-
-// Удаление студента
-const deleteStudentApi = async (studentId: number) => {
-  const res = await fetch(`http://localhost:3000/api/students/${studentId}`, {
-    method: 'DELETE',
-  });
-  if (!res.ok) throw new Error('Ошибка при удалении студента');
-  return res.json();
-};
 
 const useStudents = (): StudentsHookInterface => {
   const queryClient = useQueryClient();
