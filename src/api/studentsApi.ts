@@ -30,3 +30,15 @@ export const getStudentsApi = async (): Promise<StudentInterface[]> => {
     return [] as StudentInterface[];
   }
 };
+
+export const addStudentApi = async (studentData: Omit<StudentInterface, 'id' | 'isDeleted'>): Promise<StudentInterface> => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API}students`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(studentData),
+  });
+  if (!res.ok) throw new Error('Ошибка при добавлении студента');
+  return res.json();
+};

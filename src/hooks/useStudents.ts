@@ -2,13 +2,14 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import StudentInterface from '@/types/StudentInterface';
-import { deleteStudentApi, fetchStudents } from '@/api/studentsApi';
+import { addStudentApi, deleteStudentApi, fetchStudents } from '@/api/studentsApi';
 
 interface StudentsHookInterface {
   students: StudentInterface[];
   isLoading: boolean;
   error: Error | null;
   deleteStudentMutate: (studentId: number) => void;
+  addStudentMutate: (studentData: Omit<StudentInterface, 'id' | 'isDeleted'>) => void;
 }
 
 const useStudents = (): StudentsHookInterface => {
@@ -43,11 +44,23 @@ const useStudents = (): StudentsHookInterface => {
     },
   });
 
+  const addStudentMutate = useMutation({
+    mutationFn: (studentData: Omit<StudentInterface, 'id' | 'isDeleted'>) => 
+      addStudentApi(studentData),
+    onSuccess: (newStudent) => {
+      queryClient.setQueryData<StudentInterface[]>(['students'], (old = []) => [
+        ...old,
+        newStudent,
+      ]);
+    },
+  });
+
   return {
     students: data ?? [],
     isLoading,
     error,
     deleteStudentMutate: deleteStudentMutate.mutate,
+    addStudentMutate: addStudentMutate.mutate
   };
 };
 

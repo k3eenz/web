@@ -1,54 +1,37 @@
 'use client';
 
-import styles from './Students.module.scss';
-import StudentInterface from '@/types/StudentInterface';
 import useStudents from '@/hooks/useStudents';
-
+import type StudentInterface from '@/types/StudentInterface';
+import styles from './Students.module.scss';
+import Student from './Student/Student';
+import AddStudent from './Student/AddStudent';
 
 const Students = (): React.ReactElement => {
-  const { students = [], isLoading, error, deleteStudentMutate  } = useStudents();
-  
-  if (isLoading) return <div>Загрузка</div>;
+  const { students, deleteStudentMutate, addStudentMutate } = useStudents();
 
-  if (error) return <div>Ошибка</div>;
-
-  const handleDelete = (id: number) => {
-    deleteStudentMutate(id);
+  const onDeleteHandler = (studentId: number): void => {
+    if (confirm('Удалить студента?')) {
+      deleteStudentMutate(studentId);
+    }
   };
 
-   return (
+  const onAddHandler = (studentData: Omit<StudentInterface, 'id' | 'isDeleted'>) => {
+    addStudentMutate(studentData);
+  };
+
+  return (
     <div className={styles.Students}>
-      {students.map(student => (
-        <Student key={student.id} student={student} onDelete={handleDelete} />
+      <AddStudent onAdd={onAddHandler}/>
+      
+      {students.map((student: StudentInterface) => (
+        <Student
+          key={student.id}
+          student={student}
+          onDelete={onDeleteHandler}
+        />
       ))}
     </div>
   );
 };
 
-interface Props {
-  student: StudentInterface;
-  onDelete: (id: number) => void;
-}
-
-const Student = ({ student, onDelete }: Props): React.ReactElement => {
-  const onDeleteHandler = (): void => {
-    onDelete(student.id);
-  };
-
-  return (
-    <div className={`${styles.Student} ${student.isDeleted ? styles['--isDeleted'] : '' }`}>
-      {student.id}
-      {' - '}
-      {student.last_name}
-      {' '}
-      {student.first_name}
-      {' '}
-      {student.middle_name}
-      {' '}
-      <button onClick={onDeleteHandler}>Удалить</button>
-    </div>
-  );
-};
-
 export default Students;
-
